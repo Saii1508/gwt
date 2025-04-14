@@ -12,6 +12,7 @@ body, html {
     justify-content: center;
     height: 100vh;
     text-align: center;
+    padding-top: 40px;
 }
 .center-container > div {
     background: white;
@@ -27,8 +28,8 @@ body, html {
 
 .gwt-Label {
     font-weight: bold;
-    font-size: 22px; /* Increased from 16px */
-    color: #333; /* Slightly darker for better contrast */
+    font-size: 22px;
+    color: #333;
     margin-top: 15px;
     margin-bottom: 5px;
     letter-spacing: 0.5px;
@@ -49,7 +50,6 @@ body, html {
     box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-/* Add a floating glow and border animation on focus */
 .gwt-TextBox:focus,
 .gwt-PasswordTextBox:focus {
     border-color: #000;
@@ -92,7 +92,7 @@ body, html {
 .logo {
     width: 250px;
     display: block;
-    margin: 20px auto;
+    margin: 40px auto 20px auto;
     animation: fadeInDown 1s ease;
 }
 

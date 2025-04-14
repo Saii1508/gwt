@@ -6,12 +6,10 @@ import com.google.gwt.user.client.ui.*;
 
 public class Loader implements EntryPoint {
 
-    public Loader() {
+    @Override
+    public void onModuleLoad() {
         SimplePanel contentPanel = new SimplePanel();
         contentPanel.setWidget(new HomePanel(contentPanel));
         RootPanel.get().add(contentPanel);
-    }
-    @Override
-    public void onModuleLoad() {
     }
 }

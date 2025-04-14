@@ -8,7 +8,7 @@ public class HomePanel extends VerticalPanel {
         setSpacing(5);
         setHorizontalAlignment(ALIGN_CENTER);
         setStyleName("center-container");
-        Image logo = new Image("images/logo.png");
+        Image logo = new Image("images/welcome.png");
         logo.setStyleName("logo");
         Button login = new Button("Login");
         login.setStyleName("black-button");
@@ -25,6 +25,5 @@ public class HomePanel extends VerticalPanel {
         login.addClickHandler(clickEvent -> contentPanel.setWidget(new LoginPanel(contentPanel)));
         signup.addClickHandler(clickEvent -> contentPanel.setWidget(new SignupPanel(contentPanel)));
 
-        RootPanel.get().add(contentPanel);
     }
 }

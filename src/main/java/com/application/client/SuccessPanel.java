@@ -12,6 +12,7 @@ public class SuccessPanel extends VerticalPanel {
         setStyleName("center-container");
 
         Label title = new Label("All Registered Users");
+
         title.setStyleName("table-title");
         add(title);
 

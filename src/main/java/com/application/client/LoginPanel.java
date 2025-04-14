@@ -50,48 +50,48 @@ public class LoginPanel extends VerticalPanel {
         buttonPanel.add(back);
         add(buttonPanel);
 
-        login.addClickHandler(new ClickHandler() {
+        login.addClickHandler(event -> {
+            String gmail = email.getText();
+            String pass = password.getText();
 
-            @Override
-            public void onClick(ClickEvent clickEvent) {
-                String mail = email.getText();
-                String pass = password.getText();
+            if(gmail.isEmpty() || pass.isEmpty()) {
+                errorMessage.setText("Please enter both email and password");
+                errorMessage.setVisible(true);
+            }
+            UserDto gettingUser = new UserDto();
+            gettingUser.setEmail(gmail);
+            gettingUser.setPassword(pass);
 
-                UserDto user = new UserDto();
-                user.setEmail(mail);
-                user.setPassword(pass);
-
-                actions.login(user,new AsyncCallback<Boolean>() {
-                    @Override
-                    public void onFailure(Throwable throwable) {
-                        errorMessage.setText("Login failed due to server error.");
+            actions.login(gettingUser, new AsyncCallback<Boolean>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    errorMessage.setText("Login failed due to server error.");
+                    errorMessage.setVisible(true);
+                }
+                @Override
+                public void onSuccess(Boolean result) {
+                    if(result) {
+                        actions.getUsers(new AsyncCallback<List<UserDto>>() {
+                            @Override
+                            public void onFailure(Throwable caught) {
+                                errorMessage.setText("Failed to fetch the data");
+                                errorMessage.setVisible(true);
+                            }
+                            @Override
+                            public void onSuccess(List<UserDto> users) {
+                                contentPanel.setWidget(new SuccessPanel(contentPanel,users));
+                            }
+                        });
+                    } else {
+                        errorMessage.setText("Wrong credentials");
                         errorMessage.setVisible(true);
                     }
-
-                    @Override
-                    public void onSuccess(Boolean aBoolean) {
-                        if (aBoolean) {
-                            actions.getUsers(new AsyncCallback<List<UserDto>>() {
-                                @Override
-                                public void onFailure(Throwable throwable) {
-                                    Window.alert("Failed to fetch user list.");
-                                }
-                                @Override
-                                public void onSuccess(List<UserDto> userDtos) {
-                                    contentPanel.setWidget(new SuccessPanel(contentPanel,userDtos));
-                                }
-                            });
-                    } else {
-                            errorMessage.setText("Invalid email or password.");
-                            errorMessage.setVisible(true);
-                        }
-                    }
-                });
-            }
+                }
+            });
         });
+
 
         back.addClickHandler(clickEvent -> contentPanel.setWidget(new HomePanel(contentPanel)));
         signup.addClickHandler(clickEvent -> contentPanel.setWidget(new SignupPanel(contentPanel)));
-        RootPanel.get().add(contentPanel);
     }
 }

@@ -8,7 +8,7 @@ public class DbConnection {
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
             return DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/mygwt","root", "root15"
+                    "jdbc:mysql://localhost:3306/gwt_loader","root", "root"
             );
         } catch(Exception e){
             e.printStackTrace();

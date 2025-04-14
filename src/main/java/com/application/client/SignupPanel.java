@@ -81,7 +81,6 @@ public class SignupPanel extends VerticalPanel {
             }
         });
 
-        RootPanel.get().add(contentPanel);
 
     }
 }

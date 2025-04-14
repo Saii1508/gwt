@@ -16,13 +16,16 @@ public class ActionsImpl extends RemoteServiceServlet implements Actions {
     @Override
     public boolean login(UserDto user) {
         try (Connection con = DbConnection.getConnection()) {
-            String query = "SELECT * FROM users WHERE email = ? AND password = ?";
+            String query = "SELECT password FROM users WHERE email=?";
             PreparedStatement ps = con.prepareStatement(query);
             ps.setString(1, user.getEmail());
-            ps.setString(2, user.getPassword());
-
             ResultSet rs = ps.executeQuery();
-            return rs.next();
+            if(rs.next()) {
+                String storedPass = rs.getString("password");
+                return storedPass.equals(user.getPassword());
+            } else {
+                return false;
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -33,7 +36,7 @@ public class ActionsImpl extends RemoteServiceServlet implements Actions {
     @Override
     public boolean register(UserDto user) {
         try (Connection con = DbConnection.getConnection()) {
-            String query = "INSERT INTO users (username, email, password, contact) VALUES (?, ?, ?, ?)";
+            String query = "INSERT INTO users (name, email, password, contact) VALUES (?, ?, ?, ?)";
             PreparedStatement ps = con.prepareStatement(query);
             ps.setString(1, user.getName());
             ps.setString(2, user.getEmail());
@@ -59,7 +62,7 @@ public class ActionsImpl extends RemoteServiceServlet implements Actions {
 
             while (rs.next()) {
                 UserDto user = new UserDto();
-                user.setName(rs.getString("username"));
+                user.setName(rs.getString("name"));
                 user.setEmail(rs.getString("email"));
                 user.setPassword(rs.getString("password"));
                 user.setContact(rs.getString("contact"));
