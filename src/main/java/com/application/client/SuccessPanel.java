@@ -1,44 +1,60 @@
 package com.application.client;
 
 import com.application.shared.UserDto;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 public class SuccessPanel extends VerticalPanel {
-    public SuccessPanel(SimplePanel contentPanel,List<UserDto> users) {
-        setSpacing(10);
-        setHorizontalAlignment(ALIGN_CENTER);
-        setStyleName("center-container");
 
-        Label title = new Label("All Registered Users");
+    private final static Logger logger = Logger.getLogger(SuccessPanel.class.getName());
 
-        title.setStyleName("table-title");
-        add(title);
+    public SuccessPanel(SimplePanel contentPanel, List<UserDto> users) {
+        logger.info("Creating Success Panel");
 
-        FlexTable table = new FlexTable();
-        table.setStyleName("user-table");
+        AgGridPanel agGridPanel = new AgGridPanel();
+        agGridPanel.setHeight("400px");
+        agGridPanel.setWidth("800px");
+        add(agGridPanel);
+        agGridPanel.getElement().setId("myGrid");
+        final String id = agGridPanel.getElement().getId();
 
-        // Header
-        table.setText(0, 0, "Name");
-        table.setText(0, 1, "Email");
+        JavaScriptObject rowData = JavaScriptObject.createArray();
 
-        table.getRowFormatter().addStyleName(0, "table-header");
-
-        // Data Rows
-        for (int i = 0; i < users.size(); i++) {
-            UserDto user = users.get(i);
-            table.setText(i + 1, 0, user.getName());
-            table.setText(i + 1, 1, user.getEmail());
+        for (UserDto user : users) {
+            JavaScriptObject row = JavaScriptObject.createObject();
+            JSHelper.setAttribute(row, "name", user.getName());
+            JSHelper.setAttribute(row, "email", user.getEmail());
+            JSHelper.setAttribute(row, "password", user.getPassword());
+            JSHelper.setAttribute(row, "contact", user.getContact());
+            JSHelper.addElementInArray(rowData, row);
+            logger.info("Obj ref : " + row.hashCode());
         }
 
-        add(table);
 
-        // Back Button
-        Button back = new Button("Back to Home");
-        back.setStyleName("black-button");
-        back.addClickHandler(event -> contentPanel.setWidget(new HomePanel(contentPanel)));
+        JavaScriptObject columnDef = JavaScriptObject.createArray();
+        JavaScriptObject name = JavaScriptObject.createObject();
+        JSHelper.setAttribute(name, "field", "name");
 
-        add(back);
+        JavaScriptObject email = JavaScriptObject.createObject();
+        JSHelper.setAttribute(email, "field", "email");
+
+        JavaScriptObject password = JavaScriptObject.createObject();
+        JSHelper.setAttribute(password, "field", "password");
+
+        JavaScriptObject contact = JavaScriptObject.createObject();
+        JSHelper.setAttribute(contact, "field", "contact");
+
+        JSHelper.addElementInArray(columnDef, name);
+        JSHelper.addElementInArray(columnDef, email);
+        JSHelper.addElementInArray(columnDef, password);
+        JSHelper.addElementInArray(columnDef, contact);
+
+        agGridPanel.addAttachHandler((event -> {
+            agGridPanel.createAgGrid(id, rowData, columnDef);
+        }));
     }
 }

@@ -50,13 +50,4 @@ public class UserDto implements Serializable {
         this.contact = contact;
     }
 
-    @Override
-    public String toString() {
-        return "UserDto{" +
-                "name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", contact='" + contact + '\'' +
-                '}';
-    }
 }

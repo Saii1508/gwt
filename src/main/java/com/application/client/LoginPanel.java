@@ -9,9 +9,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 public class LoginPanel extends VerticalPanel {
 
+    private static final Logger logger = Logger.getLogger(LoginPanel.class.getName());
     private final ActionsAsync actions;
 
     public LoginPanel(SimplePanel contentPanel) {
@@ -79,6 +81,7 @@ public class LoginPanel extends VerticalPanel {
                             }
                             @Override
                             public void onSuccess(List<UserDto> users) {
+                                logger.info("received users : " + users);
                                 contentPanel.setWidget(new SuccessPanel(contentPanel,users));
                             }
                         });
