@@ -1,6 +1,7 @@
 package com.application.client;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.user.client.ui.Image;
 
 public class JSHelper {
 
@@ -11,5 +12,6 @@ public class JSHelper {
     public static native void addElementInArray(JavaScriptObject array, JavaScriptObject element) /*-{
         array.push(element);
     }-*/;
+
 }
 

@@ -1,4 +1,5 @@
 if (!window.js) window.js = {}
+
 window.js.AgGridPanel = {
 
     createAgGrid: function (id, rowData, columnDefs) {

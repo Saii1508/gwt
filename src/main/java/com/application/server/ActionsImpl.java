@@ -20,7 +20,7 @@ public class ActionsImpl extends RemoteServiceServlet implements Actions {
             PreparedStatement ps = con.prepareStatement(query);
             ps.setString(1, user.getEmail());
             ResultSet rs = ps.executeQuery();
-            if(rs.next()) {
+            if (rs.next()) {
                 String storedPass = rs.getString("password");
                 return storedPass.equals(user.getPassword());
             } else {
@@ -55,10 +55,10 @@ public class ActionsImpl extends RemoteServiceServlet implements Actions {
     @Override
     public List<UserDto> getUsers() {
         List<UserDto> users = new ArrayList<>();
-        try(Connection con = DbConnection.getConnection()) {
+        try (Connection con = DbConnection.getConnection()) {
             String query = "SELECT * FROM users";
             PreparedStatement ps = con.prepareStatement(query);
-            ResultSet rs =  ps.executeQuery();
+            ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
                 UserDto user = new UserDto();
@@ -73,6 +73,21 @@ public class ActionsImpl extends RemoteServiceServlet implements Actions {
             throw new RuntimeException(e);
         }
         return users;
+    }
+
+    @Override
+    public void delete(String email) {
+        try (
+                Connection connection = DbConnection.getConnection()) {
+            String query = "Delete from users where email =?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1,email);
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException();
+        }
+
     }
 
 }

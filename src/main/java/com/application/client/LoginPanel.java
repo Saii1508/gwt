@@ -56,6 +56,7 @@ public class LoginPanel extends VerticalPanel {
             String gmail = email.getText();
             String pass = password.getText();
 
+
             if(gmail.isEmpty() || pass.isEmpty()) {
                 errorMessage.setText("Please enter both email and password");
                 errorMessage.setVisible(true);
@@ -63,6 +64,7 @@ public class LoginPanel extends VerticalPanel {
             UserDto gettingUser = new UserDto();
             gettingUser.setEmail(gmail);
             gettingUser.setPassword(pass);
+
 
             actions.login(gettingUser, new AsyncCallback<Boolean>() {
                 @Override
@@ -81,8 +83,14 @@ public class LoginPanel extends VerticalPanel {
                             }
                             @Override
                             public void onSuccess(List<UserDto> users) {
+                                String name = users.stream()
+                                        .filter(s -> s.getEmail().equals(gettingUser.getEmail()))
+                                        .map(UserDto::getName)
+                                        .findFirst()
+                                        .orElse("No user Got");
+
                                 logger.info("received users : " + users);
-                                contentPanel.setWidget(new SuccessPanel(contentPanel,users));
+                                contentPanel.setWidget(new ShowDataPanel(contentPanel,users,name));
                             }
                         });
                     } else {

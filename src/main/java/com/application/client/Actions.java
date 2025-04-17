@@ -11,5 +11,6 @@ public interface Actions extends RemoteService {
     boolean login(UserDto user);
     boolean register(UserDto user);
     List<UserDto> getUsers();
+    void delete(String id);
 
 }

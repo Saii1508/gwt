@@ -10,6 +10,7 @@ public class Loader implements EntryPoint {
     public void onModuleLoad() {
         SimplePanel contentPanel = new SimplePanel();
         contentPanel.setWidget(new HomePanel(contentPanel));
+        DeleteRowHandler.exposeDeleteFunction();
         RootPanel.get().add(contentPanel);
     }
 }
