@@ -30,7 +30,7 @@ public class LoginPanel extends VerticalPanel {
         Image png = new Image("images/login.jpeg");
         png.setStyleName("logo");
         add(png);
-        add(new Label("Email:"));
+        add(new Label("Email / User Name:"));
         add(email);
         add(new Label("Password:"));
         add(password);
@@ -53,16 +53,22 @@ public class LoginPanel extends VerticalPanel {
         add(buttonPanel);
 
         login.addClickHandler(event -> {
-            String gmail = email.getText();
+            String inputField = email.getText().trim();
             String pass = password.getText();
 
 
-            if(gmail.isEmpty() || pass.isEmpty()) {
+            if (inputField.isEmpty() || pass.isEmpty()) {
                 errorMessage.setText("Please enter both email and password");
                 errorMessage.setVisible(true);
             }
             UserDto gettingUser = new UserDto();
-            gettingUser.setEmail(gmail);
+            if (inputField.contains("@")) {
+                gettingUser.setEmail(inputField);
+                logger.info("email: " + gettingUser.getEmail());
+            } else {
+                gettingUser.setName(inputField);
+                logger.info("name: " + gettingUser.getName());
+            }
             gettingUser.setPassword(pass);
 
 
@@ -72,25 +78,27 @@ public class LoginPanel extends VerticalPanel {
                     errorMessage.setText("Login failed due to server error.");
                     errorMessage.setVisible(true);
                 }
+
                 @Override
                 public void onSuccess(Boolean result) {
-                    if(result) {
+                    if (result) {
                         actions.getUsers(new AsyncCallback<List<UserDto>>() {
                             @Override
                             public void onFailure(Throwable caught) {
                                 errorMessage.setText("Failed to fetch the data");
                                 errorMessage.setVisible(true);
                             }
+
                             @Override
                             public void onSuccess(List<UserDto> users) {
                                 String name = users.stream()
-                                        .filter(s -> s.getEmail().equals(gettingUser.getEmail()))
+                                        .filter(s -> s.getEmail().equals(gettingUser.getEmail()) || s.getName().equals(gettingUser.getName()))
                                         .map(UserDto::getName)
                                         .findFirst()
                                         .orElse("No user Got");
 
                                 logger.info("received users : " + users);
-                                contentPanel.setWidget(new ShowDataPanel(contentPanel,users,name));
+                                contentPanel.setWidget(new ShowDataPanel(users, name));
                             }
                         });
                     } else {

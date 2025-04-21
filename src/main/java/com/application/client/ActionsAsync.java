@@ -13,5 +13,5 @@ public interface ActionsAsync  {
 
     void login(UserDto user, AsyncCallback<Boolean> async);
 
-    void delete(String id, AsyncCallback<Void> async);
+    void delete(String id, AsyncCallback<Boolean> async);
 }

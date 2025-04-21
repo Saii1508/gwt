@@ -4,21 +4,38 @@ import com.application.client.Actions;
 import com.application.shared.UserDto;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class ActionsImpl extends RemoteServiceServlet implements Actions {
+
+    private static final Logger logger  = Logger.getLogger(ActionsImpl.class.getName());
 
     @Override
     public boolean login(UserDto user) {
         try (Connection con = DbConnection.getConnection()) {
-            String query = "SELECT password FROM users WHERE email=?";
-            PreparedStatement ps = con.prepareStatement(query);
-            ps.setString(1, user.getEmail());
+            PreparedStatement ps;
+            String query;
+            /*query = "select * from users  where name='" + user.getName() + "' and password = '" + user.getPassword() + "'";
+
+            //ps = con.prepareStatement(query);
+            logger.info(query);
+            ResultSet rs = statement.executeQuery(query);
+            return rs.next();*/
+
+            if (user.getEmail() != null && !user.getEmail().isEmpty()) {
+                query = "SELECT password FROM users WHERE email = ?";
+                ps = con.prepareStatement(query);
+                ps.setString(1, user.getEmail());
+            } else if(user.getName() != null && !user.getName().isEmpty()){
+                query = "SELECT password FROM users WHERE name = ?";
+                ps = con.prepareStatement(query);
+                ps.setString(1, user.getName());
+            } else {
+                return false;
+            }
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 String storedPass = rs.getString("password");
@@ -26,7 +43,6 @@ public class ActionsImpl extends RemoteServiceServlet implements Actions {
             } else {
                 return false;
             }
-
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -76,18 +92,17 @@ public class ActionsImpl extends RemoteServiceServlet implements Actions {
     }
 
     @Override
-    public void delete(String email) {
-        try (
-                Connection connection = DbConnection.getConnection()) {
-            String query = "Delete from users where email =?";
+    public boolean delete(String email) {
+        try (Connection connection = DbConnection.getConnection()) {
+            String query = "delete from users where email = ?";
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1,email);
-            statement.executeUpdate();
-
+            statement.setString(1, email);
+            int deletedRows = statement.executeUpdate();
+            logger.info("deleted users : " + deletedRows);
+            return deletedRows > 0;
         } catch (SQLException e) {
             throw new RuntimeException();
         }
-
     }
 
 }

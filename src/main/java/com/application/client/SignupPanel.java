@@ -36,27 +36,38 @@ public class SignupPanel extends VerticalPanel {
 
         Button signUp = new Button("Sign Up");
         signUp.setStyleName("black-button");
-        Button login = new Button("Login");
-        login.setStyleName("black-button");
         Button back = new Button("Back to Home");
         back.setStyleName("black-button");
 
         HorizontalPanel buttonPanel = new HorizontalPanel();
         buttonPanel.setSpacing(5);
         buttonPanel.add(signUp);
-        buttonPanel.add(login);
         buttonPanel.add(back);
         add(buttonPanel);
 
         back.addClickHandler(clickEvent -> contentPanel.setWidget(new HomePanel(contentPanel)));
-        login.addClickHandler(clickEvent -> contentPanel.setWidget(new LoginPanel(contentPanel)));
         signUp.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent clickEvent) {
-                String mail = email.getText();
-                String nam = username.getText();
-                String pass = password.getText();
-                String cont = contact.getText();
+                String mail = email.getText().trim();
+                String nam = username.getText().trim();
+                String pass = password.getText().trim();
+                String cont = contact.getText().trim();
+
+                if (!mail.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+                    Window.alert("Please enter a valid email address.");
+                    return;
+                }
+
+                if (!cont.matches("\\d+")) {
+                    Window.alert("Contact number must contain digits only.");
+                    return;
+                }
+
+                if (nam.isEmpty() || pass.isEmpty() || mail.isEmpty() || cont.isEmpty()) {
+                    Window.alert("All fields are required.");
+                    return;
+                }
 
                 UserDto user = new UserDto();
                 user.setName(nam);
@@ -64,7 +75,7 @@ public class SignupPanel extends VerticalPanel {
                 user.setEmail(mail);
                 user.setContact(cont);
 
-                actions.register(user,new AsyncCallback<Boolean>() {
+                actions.register(user, new AsyncCallback<Boolean>() {
                     @Override
                     public void onFailure(Throwable throwable) {
                         Window.alert("Error: " + throwable.getMessage());
@@ -74,13 +85,12 @@ public class SignupPanel extends VerticalPanel {
                         if (aBoolean) {
                             contentPanel.setWidget(new LoginPanel(contentPanel));
                         } else {
-                            Window.alert("Login failed");
+                            Window.alert("Signup failed. Try again.");
                         }
                     }
                 });
             }
         });
-
 
     }
 }

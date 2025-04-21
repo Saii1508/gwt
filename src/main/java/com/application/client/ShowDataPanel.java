@@ -14,35 +14,39 @@ public class ShowDataPanel extends VerticalPanel {
 
     private static final Logger logger = Logger.getLogger(ShowDataPanel.class.getName());
 
-    public ShowDataPanel(SimplePanel contentPanel, List<UserDto> users,String uName) {
-
-        Label userName = new Label("Welcome "+ uName + " hope doing great!" );
+    public ShowDataPanel(List<UserDto> users, String uName) {
+        this.getElement().setId("data-grid");
+        Label userName = new Label("Welcome " + uName + " hope doing great!");
         userName.setStyleName("gwt-Label");
         add(userName);
         logger.info("Show Data panel is created");
-        DataAgGridPanel dataAgGridPanel = new DataAgGridPanel();
 
+        DataAgGridPanel dataAgGridPanel = new DataAgGridPanel();
         dataAgGridPanel.setHeight("400px");
         dataAgGridPanel.setWidth("800px");
         add(dataAgGridPanel);
         dataAgGridPanel.getElement().setId("girdMy");
         String id = dataAgGridPanel.getElement().getId();
-
         JavaScriptObject rowData = JavaScriptObject.createArray();
-
-        Image deleteLogo = new Image("/images/delete.png");
-
-        for(UserDto eachUser:users) {
+        for (UserDto eachUser : users) {
             JavaScriptObject row = JavaScriptObject.createObject();
-            JSHelper.setAttribute(row,"name",eachUser.getName());
-            JSHelper.setAttribute(row,"email",eachUser.getEmail());
-            JSHelper.setAttribute(row,"password",eachUser.getPassword());
-            JSHelper.setAttribute(row,"contact",eachUser.getContact());
-            JSHelper.setAttribute(row,"delete","delete");
-
-            JSHelper.addElementInArray(rowData,row);
-            logger.info("Obj ref: "+row.hashCode());
+            JSHelper.setAttribute(row, "name", eachUser.getName());
+            JSHelper.setAttribute(row, "email", eachUser.getEmail());
+            JSHelper.setAttribute(row, "password", eachUser.getPassword());
+            JSHelper.setAttribute(row, "contact", eachUser.getContact());
+            JSHelper.setAttribute(row, "delete", "delete");
+            JSHelper.addElementInArray(rowData, row);
+            logger.info("Obj ref: " + row.hashCode());
         }
+        dataAgGridPanel.addAttachHandler(event -> {
+            DataAgGridPanel.createDataGrid(id, rowData);
+        });
+
+    }
+
+}
+
+
 
         /*JavaScriptObject columnDef = JavaScriptObject.createArray();
 
@@ -66,12 +70,3 @@ public class ShowDataPanel extends VerticalPanel {
         JSHelper.addElementInArray(columnDef,password);
         JSHelper.addElementInArray(columnDef,contact);
         JSHelper.addElementInArray(columnDef,delete);*/
-
-        dataAgGridPanel.addAttachHandler(event -> {
-           dataAgGridPanel.createDataGrid(id,rowData);
-        });
-
-    }
-
-
-}

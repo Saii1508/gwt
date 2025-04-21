@@ -40,14 +40,14 @@ window.ds.DataAgGridPanel = {
 function DeleteLogoRenderer() {}
 
 DeleteLogoRenderer.prototype.init = function (params) {
-    const img = document.createElement('img');
-    img.src = '/images/delete.png';
-    img.className = 'delete';
-    img.style.width = '20px';
-    img.style.cursor = 'pointer';
-    img.title = "Delete User";
+    const deleteImg = document.createElement('img');
+    deleteImg.src = '/images/delete.png';
+    deleteImg.className = 'delete';
+    deleteImg.style.width = '20px';
+    deleteImg.style.cursor = 'pointer';
+    deleteImg.title = "Delete User";
 
-    img.addEventListener('click', () => {
+    deleteImg.addEventListener('click', () => {
         console.log("id name " + params.data.email);
         if (window.deleteRowFromGWT) {
             window.deleteRowFromGWT(params.data.email, function () {
@@ -58,7 +58,7 @@ DeleteLogoRenderer.prototype.init = function (params) {
 
     const span = document.createElement('span');
     span.className = 'imgSpanLogo';
-    span.appendChild(img);
+    span.appendChild(deleteImg);
 
     this.eGui = span;
 };

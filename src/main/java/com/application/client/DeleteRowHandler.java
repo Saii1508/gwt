@@ -1,14 +1,19 @@
 package com.application.client;
 
+import com.application.shared.UserDto;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 
+import java.util.List;
 import java.util.logging.Logger;
 
-public class DeleteRowHandler extends VerticalPanel {
+public class DeleteRowHandler {
 
     private final static Logger logger = Logger.getLogger(DeleteRowHandler.class.getName());
 
@@ -44,26 +49,37 @@ public class DeleteRowHandler extends VerticalPanel {
         yesButton.addClickHandler(event -> {
             dialogBox.hide();
             final ActionsAsync actions = GWT.create(Actions.class);
-            actions.delete(email, new AsyncCallback<Void>() {
+            actions.delete(email, new AsyncCallback<Boolean>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     Window.alert("No user found with this ID.");
                 }
 
                 @Override
-                public void onSuccess(Void result) {
-                    logger.info("successfully deleted");
-                    invokeCallback(onSuccessCallback);
+                public void onSuccess(Boolean result) {
+                    if (result) {
+                        logger.info("successfully deleted");
+                        ActionsAsync actions = GWT.create(Actions.class);
+                        actions.getUsers(new AsyncCallback<List<UserDto>>() {
+                            @Override
+                            public void onFailure(Throwable caught) {
+                                Window.alert("Sorry");
+                            }
+
+                            @Override
+                            public void onSuccess(List<UserDto> users) {
+                                //Element element = Document.get().getElementById("data-grid");
+                                RootPanel.get().getElement().removeAllChildren();
+                                RootPanel.get().add(new ShowDataPanel(users, "same dude"));
+                            }
+                        });
+
+                    } else {
+                        Window.alert("Unable to delete user");
+                    }
                 }
             });
         });
-
         noButton.addClickHandler(event -> dialogBox.hide());
     }
-
-    private static native void invokeCallback(JavaScriptObject callback) /*-{
-        if (callback) {
-            callback();
-        }
-    }-*/;
 }
